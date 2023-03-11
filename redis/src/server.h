@@ -563,6 +563,7 @@ typedef enum {
 #define MAXMEMORY_ALLKEYS_LFU ((5<<8)|MAXMEMORY_FLAG_LFU|MAXMEMORY_FLAG_ALLKEYS)
 #define MAXMEMORY_ALLKEYS_RANDOM ((6<<8)|MAXMEMORY_FLAG_ALLKEYS)
 #define MAXMEMORY_NO_EVICTION (7<<8)
+#define MAXMEMORY_ALLKEYS_HC (8<<8|MAXMEMORY_FLAG_LRU|MAXMEMORY_FLAG_ALLKEYS) 
 
 /* Units */
 #define UNIT_SECONDS 0
@@ -3599,6 +3600,9 @@ void lcsCommand(client *c);
 void quitCommand(client *c);
 void resetCommand(client *c);
 void failoverCommand(client *c);
+
+/* object.c function onily used maxmeory_hc_policy*/ 
+size_t objectComputeSize(robj *key, robj *o, size_t sample_size, int dbid);
 
 #if defined(__GNUC__)
 void *calloc(size_t count, size_t size) __attribute__ ((deprecated));

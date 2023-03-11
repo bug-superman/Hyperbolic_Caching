@@ -54,7 +54,7 @@
 #define EVPOOL_SIZE 16
 #define EVPOOL_CACHED_SDS_SIZE 255
 struct evictionPoolEntry {
-    unsigned long long idle;    /* Object idle time (inverse frequency for LFU) */
+    double idle;    /* Object idle time (inverse frequency for LFU) */
     sds key;                    /* Key name. */
     sds cached;                 /* Cached SDS object for key name. */
     int dbid;                   /* Key DB number. */
@@ -143,6 +143,15 @@ void evictionPoolAlloc(void) {
  * idle time are on the left, and keys with the higher idle time on the
  * right. */
 
+double keyHcPolicyidle(int dbid, robj *key, robj *o) {
+     long long lru_time = estimateObjectIdleTime(o);
+     int sample_num = 5;
+     long long size = objectComputeSize(key, o, sample_num, dbid) / 1000;
+     long long expire_time = getExpire(server.db + dbid,key);
+     // 公式
+     mstime_t now = commandTimeSnapshot();
+    return size / (now - lru_time);
+}
 void evictionPoolPopulate(int dbid, dict *sampledict, dict *keydict, struct evictionPoolEntry *pool) {
     int j, k, count;
     dictEntry *samples[server.maxmemory_samples];
@@ -169,7 +178,10 @@ void evictionPoolPopulate(int dbid, dict *sampledict, dict *keydict, struct evic
          * idle just because the code initially handled LRU, but is in fact
          * just a score where an higher score means better candidate. */
         if (server.maxmemory_policy & MAXMEMORY_FLAG_LRU) {
-            idle = estimateObjectIdleTime(o);
+            if(server.maxmemory_policy == MAXMEMORY_ALLKEYS_HC) 
+                idle = keyHcPolicyidle(dbid, key, o);
+             else 
+                 idle = estimateObjectIdleTime(o);
         } else if (server.maxmemory_policy & MAXMEMORY_FLAG_LFU) {
             /* When we use an LRU policy, we sort the keys by idle time
              * so that we expire keys starting from greater idle time.

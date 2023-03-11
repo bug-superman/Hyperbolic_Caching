@@ -4,7 +4,7 @@
 #include <sys/time.h>
 #include<limits.h>
 #include<cstring>
-#define N 2000000 // 生成数据的总数
+#define N 1300000 // 生成数据的总数
 #define ALPHA 1.0 // Zipfian分布的参数
 
 

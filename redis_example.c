@@ -13,7 +13,7 @@
 #define REDIS_DB   0
 #define DATAFILE "zipfian_data.txt"
 #define MAX_STR 4048
-#define N 2000000
+#define N 1300000 
 #define CACHE_MISS 0
 #define CACHE_HIT 1
 
@@ -46,17 +46,23 @@ void init_value(char **values) {
     }
 } 
 // 将key赋值上随机长度的value
-void set_value(char *value) {
+char* set_value() {
     int len = 0;
     gettimeofday(&tv, NULL);
     seed_num = (tv.tv_sec + tv.tv_usec) % UINT_MAX; 
     srand(seed_num);
     len = rand() % MAX_STR;
     if(len == 0) len = 5;
-    value = (char *) malloc(sizeof(char) * (len + 1));
+   char *value = (char *) malloc(sizeof(char) * (len + 1));
     get_random_str(value, len);
+    return value;
 }
 
+void free_values(char **values) {
+     for(int i = 0; i < N; i++) {
+        free(values[i]);
+     }
+}
 /* if cache miss return 0, cacahe hit return 1*/
 int get_redisCache(redisContext *redis,char *key, char *value) {
      
@@ -86,7 +92,7 @@ int main(void) {
     FILE *fp = fopen(DATAFILE, "r");
     char line[MAX_STR + 1] = "\0";
     char *token;
-    char **values = malloc(sizeof(char*) * N);
+    char **values =(char **) malloc(sizeof(char*) * N);
     int key = 0;
     //初始化工作
     init_value(values); // map将key与value对应起来
@@ -109,15 +115,15 @@ int main(void) {
     }
     printf("redis run ok and read file\n");
     /* 开始模拟负载*/
-    int cachemiss = 0, cachehit = 0;
+    int cachemiss = 0, cachehit = 0, number = 0;
     int i = 0;
     while (fgets(line, MAX_STR, fp) != NULL) {
        int len = strcspn(line, "\n");
         line[len] = '\0';
         sscanf(line,"%d",&key);
-        
         if(values[key] == NULL) { //第一次加载需要初始化随机长度的value
-            set_value(values[key]);
+            values[key] = set_value();
+            number++;
         }
         int ans = get_redisCache(redis, line, values[key]);
         if(ans ==CACHE_HIT) cachehit++;
@@ -125,10 +131,10 @@ int main(void) {
 
         memset(line, '\0',  sizeof(line));
     }
-    double cacherate = (double) cachehit / (cachehit + cachemiss);
-    printf("cachemiss:%d,cachehit:%d, cacherate:%lf\n",cachemiss, cachehit, cacherate);
+    double cacherate = (double) cachehit / (cachehit + cachemiss - number);
+    printf("cachemiss:%d,cachehit:%d,number:%d ,cacherate:%lf\n",cachemiss, cachehit, number,cacherate);
     // 关闭文件
     fclose(fp);
-    free(values);
+    free_values(values);
     return 0;
 }

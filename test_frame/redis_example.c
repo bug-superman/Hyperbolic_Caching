@@ -12,8 +12,8 @@
 #define REDIS_PORT 6379
 #define REDIS_DB   0
 #define DATAFILE "zipfian_data.txt"
-#define MAX_STR 4048
-#define N 1300000 
+#define MAX_STR 4050
+#define N 1100000 
 #define CACHE_MISS 0
 #define CACHE_HIT 1
 
@@ -118,6 +118,7 @@ int main(void) {
     int cachemiss = 0, cachehit = 0, number = 0;
     int i = 0;
     while (fgets(line, MAX_STR, fp) != NULL) {
+       // printf("read is ok!\n");
        int len = strcspn(line, "\n");
         line[len] = '\0';
         sscanf(line,"%d",&key);

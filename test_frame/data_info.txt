@@ -1,116 +1,104 @@
-test1:
-
-cachemiss:368540,cachehit:931460,number:165054 ,cacherate:0.820709
-memory: 100mb, maxmemory-policy allkeys-lru
-info memory
-# Memory
-used_memory:104853872
-used_memory_human:100.00M
-used_memory_rss:114851840
-used_memory_rss_human:109.53M
-used_memory_peak:104857632
-used_memory_peak_human:100.00M
-used_memory_peak_perc:100.00%
-used_memory_overhead:3257688
-used_memory_startup:864832
-used_memory_dataset:101596184
-used_memory_dataset_perc:97.70%
-allocator_allocated:105056736
-allocator_active:106938368
-allocator_resident:111255552
-total_system_memory:3585273856
-total_system_memory_human:3.34G
-used_memory_lua:31744
-used_memory_vm_eval:31744
-used_memory_lua_human:31.00K
-used_memory_scripts_eval:0
-number_of_cached_scripts:0
-number_of_functions:0
-number_of_libraries:0
-used_memory_vm_functions:32768
-used_memory_vm_total:64512
-used_memory_vm_total_human:63.00K
-used_memory_functions:184
-used_memory_scripts:184
-used_memory_scripts_human:184B
-maxmemory:104857600
-maxmemory_human:100.00M
-maxmemory_policy:allkeys-lru
-allocator_frag_ratio:1.02
-allocator_frag_bytes:1881632
-allocator_rss_ratio:1.04
-allocator_rss_bytes:4317184
-rss_overhead_ratio:1.03
-rss_overhead_bytes:3596288
-mem_fragmentation_ratio:1.10
-mem_fragmentation_bytes:9996064
-mem_not_counted_for_evict:0
-mem_replication_backlog:0
-mem_total_replication_buffers:0
-mem_clients_slaves:0
-mem_clients_normal:27144
-mem_cluster_links:0
-mem_aof_buffer:0
-mem_allocator:jemalloc-5.2.1
-active_defrag_running:0
-lazyfree_pending_objects:0
-lazyfreed_objects:0
-
-
-test2:
-cachemiss:352494,cachehit:947506,number:165054 ,cacherate:0.834847
-memory: 100mb, maxmemory-policy allkeys-lru
+hc:
+cache: 100mb, sample_size: 32
+ans:  cachemiss:266016,cachehit:833984,number:140833,cacherate:0.869488
+127.0.0.1:6379> info keyspace
 # Keyspace
-db0:keys=45999,expires=0,avg_ttl=0
-# Memory
-used_memory:104852352
-used_memory_human:99.99M
-used_memory_rss:114565120
-used_memory_rss_human:109.26M
-used_memory_peak:104857632
-used_memory_peak_human:100.00M
-used_memory_peak_perc:99.99%
-used_memory_overhead:3231032
-used_memory_startup:864800
-used_memory_dataset:101621320
-used_memory_dataset_perc:97.72%
-allocator_allocated:105037312
-allocator_active:106856448
-allocator_resident:110940160
-total_system_memory:3585273856
-total_system_memory_human:3.34G
-used_memory_lua:31744
-used_memory_vm_eval:31744
-used_memory_lua_human:31.00K
-used_memory_scripts_eval:0
-number_of_cached_scripts:0
-number_of_functions:0
-number_of_libraries:0
-used_memory_vm_functions:32768
-used_memory_vm_total:64512
-used_memory_vm_total_human:63.00K
-used_memory_functions:184
-used_memory_scripts:184
-used_memory_scripts_human:184B
-maxmemory:104857600
-maxmemory_human:100.00M
-maxmemory_policy:allkeys-lfu
-allocator_frag_ratio:1.02
-allocator_frag_bytes:1819136
-allocator_rss_ratio:1.04
-allocator_rss_bytes:4083712
-rss_overhead_ratio:1.03
-rss_overhead_bytes:3624960
-mem_fragmentation_ratio:1.09
-mem_fragmentation_bytes:9733440
-mem_not_counted_for_evict:0
-mem_replication_backlog:0
-mem_total_replication_buffers:0
-mem_clients_slaves:0
-mem_clients_normal:1800
-mem_cluster_links:0
-mem_aof_buffer:0
-mem_allocator:jemalloc-5.2.1
-active_defrag_running:0
-lazyfree_pending_objects:0
-lazyfreed_objects:0
+db0:keys=62285,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 32
+ans: cachemiss:306436,cachehit:793564,number:140833 ,cacherate:0.827347
+not connected> info keyspace
+# Keyspace
+db0:keys=46983,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 5
+ans: cachemiss:315818,cachehit:784182,number:140833 ,cacherate:0.817566
+
+
+cache: 70mb, sample_size: 3
+ans: cachemiss:325631,cachehit:774369,number:140833 ,cacherate:0.807335
+not connected> info keyspace
+# Keyspace
+db0:keys=40426,expires=0,avg_ttl=0
+
+
+
+
+lru: 
+cache: 100mb, sample_size: 32
+ans: cachemiss:294273,cachehit:805727,number:140833 ,cacherate:0.840028
+127.0.0.1:6379> info keyspace
+# Keyspace
+db0:keys=45968,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 32
+ans:cachemiss:335822,cachehit:764178,number:140833 ,cacherate:0.796710
+not connected> info keyspace
+# Keyspace
+db0:keys=31894,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 5
+ans: cachemiss:337364,cachehit:762636,number:140833 ,cacherate:0.795102
+# Keyspace
+db0:keys=32103,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 3
+ans: cachemiss:340596,cachehit:759404,number:140833 ,cacherate:0.791733
+# Keyspace
+db0:keys=32171,expires=0,avg_ttl=0
+
+
+
+lfu:
+cache: 100mb, sample_size: 32
+ans:cachemiss:285647,cachehit:814353,number:140833 ,cacherate:0.849021
+127.0.0.1:6379> info keyspace
+# Keyspace
+db0:keys=45895,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 32
+ans: cachemiss:316102,cachehit:783898,number:140833 ,cacherate:0.817270   
+not connected> info keyspace
+# Keyspace
+db0:keys=31913,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 5
+ans:  cachemiss:318242,cachehit:781758,number:140833 ,cacherate:0.815038
+not connected> info keyspace
+# Keyspace
+db0:keys=31976,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 3
+ans: cachemiss:334426,cachehit:765574,number:140833 ,cacherate:0.798165
+
+
+
+
+random:
+cache: 100mb, sample_size: 32
+ans:cachemiss:319059,cachehit:780941,number:140833 ,cacherate:0.814187
+info keyspace
+# Keyspace
+db0:keys=46038,expires=0,avg_ttl=0
+
+
+cache: 70mb, sample_size: 32
+ans: cachemiss:367083,cachehit:732917,number:140833 ,cacherate:0.764118
+not connected> info keyspace
+# Keyspace
+db0:keys=32038,expires=0,avg_ttl=0
+
+cache: 70mb, sample_size: 5
+ans: cachemiss:367435,cachehit:732565,number:140833 ,cacherate:0.763751
+not connected> info keyspace
+# Keyspace
+db0:keys=31976,expires=0,avg_ttl=0
+
+
+3/25
+hc:
+not connected> info keyspace
+# Keyspace
+db0:keys=29684,expires=0,avg_ttl=0
+cachemiss:126386,cachehit:373614, cacherate:0.747228
+

@@ -142,20 +142,23 @@ void evictionPoolAlloc(void) {
  * We insert keys on place in ascending order, so keys with the smaller
  * idle time are on the left, and keys with the higher idle time on the
  * right. */
-
-double keyHcPolicyidle(int dbid, robj *key, robj *o) {
-     long long lru_time = estimateObjectIdleTime(o);
+static int hc_num = 0;
+double keyHcPolicyidle(int dbid, sds key, robj *o) {
+     if(hc_num ++ == 1) printf("hc active!!!\n");
+     long long lru_time = estimateObjectIdleTime(o) / 100;
      int sample_num = 5;
-     long long size = objectComputeSize(key, o, sample_num, dbid) / 1000;
-     long long expire_time = getExpire(server.db + dbid,key);
-     // 公式
-     mstime_t now = commandTimeSnapshot();
-    return size / (now - lru_time);
+    // robj *keyobj = createStringObject(key, sdslen(key));
+     long long size = objectComputeSize(o, o, sample_num, dbid) / 50;
+    // freeStringObject(keyobj);
+     double ans = (double)(lru_time * size) / 1000 ;
+     if(hc_num  < 10 ) {
+        printf("key:%s,hc_num:%d,size:%lld,lru_time:%lld,ans:%lf\n",key,hc_num, size,lru_time, ans);
+     } 
+    return ans;
 }
 void evictionPoolPopulate(int dbid, dict *sampledict, dict *keydict, struct evictionPoolEntry *pool) {
     int j, k, count;
     dictEntry *samples[server.maxmemory_samples];
-
     count = dictGetSomeKeys(sampledict,samples,server.maxmemory_samples);
     for (j = 0; j < count; j++) {
         unsigned long long idle;
@@ -165,7 +168,6 @@ void evictionPoolPopulate(int dbid, dict *sampledict, dict *keydict, struct evic
 
         de = samples[j];
         key = dictGetKey(de);
-
         /* If the dictionary we are sampling from is not the main
          * dictionary (but the expires one) we need to lookup the key
          * again in the key dictionary to obtain the value object. */
@@ -247,6 +249,7 @@ void evictionPoolPopulate(int dbid, dict *sampledict, dict *keydict, struct evic
             sdssetlen(pool[k].cached,klen);
             pool[k].key = pool[k].cached;
         }
+
         pool[k].idle = idle;
         pool[k].dbid = dbid;
     }

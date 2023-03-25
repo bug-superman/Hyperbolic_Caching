@@ -990,20 +990,25 @@ size_t streamRadixTreeMemoryUsage(rax *rax) {
  * case of aggregated data types where only "sample_size" elements
  * are checked and averaged to estimate the total size. */
 #define OBJ_COMPUTE_SIZE_DEF_SAMPLES 5 /* Default sample size. */
+static int test_computesize = 0;
 size_t objectComputeSize(robj *key, robj *o, size_t sample_size, int dbid) {
     sds ele, ele2;
     dict *d;
     dictIterator *di;
     struct dictEntry *de;
     size_t asize = 0, elesize = 0, samples = 0;
-
+    test_computesize++;
     if (o->type == OBJ_STRING) {
+        if(test_computesize == 1) printf("OBJ_STRING!\n");
         if(o->encoding == OBJ_ENCODING_INT) {
+            if(test_computesize == 1) printf("OBJ_STRING!\n");
             asize = sizeof(*o);
         } else if(o->encoding == OBJ_ENCODING_RAW) {
+            if(test_computesize == 1) printf("raw_size_sds:%ld\n",sdsZmallocSize(o->ptr));
             asize = sdsZmallocSize(o->ptr)+sizeof(*o);
         } else if(o->encoding == OBJ_ENCODING_EMBSTR) {
             asize = zmalloc_size((void *)o);
+            if(test_computesize == 1) printf("embstr_size_sds:%ld\n",asize);
         } else {
             serverPanic("Unknown string encoding");
         }
@@ -1146,6 +1151,7 @@ size_t objectComputeSize(robj *key, robj *o, size_t sample_size, int dbid) {
     } else {
         serverPanic("Unknown object type");
     }
+    if(test_computesize == 1) printf("finally_ans:%ld\n",asize);
     return asize;
 }
 
